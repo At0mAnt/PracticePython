@@ -4,19 +4,19 @@ import pyperclip, klipper
 
 def getWord(*args):
     try:
-        value , bookName, mValue = keyWord.get(), klipBook.get(),menuValue.get()
-        if(mValue == 'Add to '):
+        value , bookName, mValue = keyWord.get(), klipBook.get(),radioValue.get()
+        if(mValue == 'Add'):
             reValue.set(klipper.klipperInsert(value,bookName))
-        elif(mValue == 'List from'):
+        elif(mValue == 'List'):
             reValue.set(klipper.klipperKeys(bookName))
-        elif(mValue == 'Toss from'):
+        elif(mValue == 'Toss'):
             reValue.set(klipper.klipperErase(value,bookName))
         else:
             reValue.set(klipper.klipperGet(value,bookName))
+
     except ValueError:
         pass
-
-
+    
 root = Tk()
 root.title("Klipboard 2.0")
 
@@ -28,22 +28,24 @@ root.rowconfigure(0, weight=1)
 keyWord = StringVar()
 reValue = StringVar()
 klipBook = StringVar()
-menuValue = StringVar()
-menuItems = {'Find & Get from', 'Add to ', 'List from','Toss from'}
-menuValue.set('Find & Get from')
+radioValue = StringVar()
+radioLabels = {'Find & Get':1,'Add':2, 'List':3,'Toss':4}
+radioValue.set('Add')
 klipBook.set('KlipBook')
 
 keyWord_entry = ttk.Entry(mainframe, width=12, textvariable=keyWord)
-keyWord_entry.grid(column=2, row=1, sticky=(W, E))
+keyWord_entry.grid(column=2, row=1, sticky=(W+E))
 
-ttk.Label(mainframe, textvariable=reValue).grid(column=1, row=4, sticky=(E))
-popupMenu = OptionMenu(mainframe, menuValue, *menuItems)
-popupMenu.grid(row=1, column=4 , sticky=(E))
-ttk.Button(mainframe, textvariable=menuValue, command=getWord).grid(column=4, row=2, sticky=W)
+ttk.Label(mainframe, textvariable=reValue).grid(column=1,row=4,columnspan=7, sticky=(W+E))
+for val, radioLabel in enumerate(radioLabels):
+    ttk.Radiobutton(root,text=radioLabel,variable=radioValue,value=radioLabel).grid(column=0,columnspan=5,row=(val+2),stick=W)
 
 
-ttk.Label(mainframe, text="Klip Word: ").grid(column=1, row=1, sticky=W)
-ttk.Label(mainframe, text="in the :").grid(column=1, row=2, sticky=E)
+ttk.Button(mainframe, textvariable=radioValue, command=getWord).grid(column=4, row=2, sticky=W+E)
+
+
+ttk.Label(mainframe, text="Klip word: ").grid(column=1, row=1, sticky=W+E)
+ttk.Label(mainframe, text="File name:").grid(column=1, row=2, sticky=W+E)
 klipBook_entry = ttk.Entry(mainframe,width=12, textvariable=klipBook)
 klipBook_entry.grid(column=2, row=2, sticky=W)
 
